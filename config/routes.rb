@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root "static_pages#home"
+  
   get '/help', to: "static_pages#help"
   get '/about', to: "static_pages#about"
   get '/contact', to: "static_pages#contact"
@@ -7,5 +9,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   
-  root "static_pages#home"
+  get '/signup', to: "user#new"
+  post 'user/create'
+  get 'user/edit'
+  patch 'user/update'
+  get 'user/all'
+  get 'user/show'
+  delete 'user/destroy'
 end
