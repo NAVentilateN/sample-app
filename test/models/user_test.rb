@@ -7,7 +7,11 @@ class UserTest < ActiveSupport::TestCase
   
   def setup
     @user = users(:first_user)
+    @user.password = ("foobar")
+    @user.password_confirmation = ("foobar")
     @user2 = users(:second_user)
+    @user2.password = ("foobar")
+    @user2.password_confirmation = ("foobar")
   end
   
   test "invalid user if name is empty" do
@@ -30,8 +34,10 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
   
-  test "valid user if all fields are not empty and email format is correct" do
+  test "valid user if all fields are not empty and email format is correct and user is able to create a new account" do
     assert @user.valid?
+    @user.save
+    assert @user.authenticate('foobar')
   end
   
   test "invalid user if all user name is more than 20 character long" do
@@ -62,11 +68,27 @@ class UserTest < ActiveSupport::TestCase
   end
   
   
-  test "user email should be downcase after saving into database" do
+  test "user email should not be the same after saving into database" do
     email = "FiRsT@FiRsT.com"
     @user.email = email
     @user.save
     assert_not_equal @user.email, email
+  end
+  
+  test "user email should be downcase after saving into database" do
+    email = "FiRsT@FiRsT.com"
+    @user.email = email
+    @user.save
     assert_equal @user.email, email.downcase
+  end
+  
+  test "user password should not be blank" do
+    @user.password = " " * 6
+    assert_not @user.valid?
+  end
+  
+  test "user password should not be less than 6 character" do
+    @user.password = "a" * 5
+    assert_not @user.valid?
   end
 end

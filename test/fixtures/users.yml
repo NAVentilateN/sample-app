@@ -5,7 +5,7 @@ first_user:
   first_name: first
   last_name: first
   email: first@first.com
-
+  
 second_user:
   name: second
   first_name: second
