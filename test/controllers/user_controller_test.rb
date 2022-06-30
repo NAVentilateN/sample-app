@@ -4,6 +4,9 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   
   def setup
     @base_title = "Ruby on Rails Tutorial Sample App"
+    @user = users(:first_user)
+    @user.password = "foobar"
+    @user.password_confirmation = "foobar"
   end
   
   test "should get new" do
@@ -17,8 +20,9 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
 
-  test "should get edit" do
-    get user_edit_url
+  test "should get edit page" do
+    @user.save
+    get edit_user_path(@user)
     assert_response :success
   end
 
@@ -28,17 +32,20 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "should get all" do
-    get user_all_url
+    get users_path
     assert_response :success
   end
 
   test "should get show" do
-    get user_show_url
+    @user.save
+    get user_path(@user)
     assert_response :success
   end
 
   # test "should get destroy" do
-  #   get user_destroy_url
-  #   assert_response :success
+  #   @user.save
+  #   assert_difference User.count, -1 do
+  #     delete user_path(@user)
+  #   end
   # end
 end

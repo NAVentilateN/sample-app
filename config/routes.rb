@@ -9,11 +9,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   
-  get '/signup', to: "user#new"
-  post 'user/create'
-  get 'user/edit'
-  patch 'user/update'
-  get 'user/all'
-  get 'user/show'
-  delete 'user/destroy'
+  get '/signup', to: "users#new"
+  resources :users, except: [ :new]
 end
