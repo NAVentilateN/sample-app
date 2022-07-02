@@ -1,0 +1,20 @@
+<% provide(:title, 'Login') %>
+
+<h1>Sessions#new</h1>
+<p>Find me in app/views/sessions/new.html.erb</p>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_with(url: login_path, scope: :session) do |form| %>
+      <%= form.label :email, "Enter your email:" %>
+      <%= form.email_field  :email, required: true, placeholder: "email@email.com", class: 'form-control' %>
+      <%= form.label :password, "Enter your password:" %>
+      <%= form.password_field  :password, required: true, class: 'form-control' %>
+      <%= form.submit "Log in", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="signup-action">
+  <p>New user? <%= link_to "Sign Up Now", signup_path %> </p>
+</div>
