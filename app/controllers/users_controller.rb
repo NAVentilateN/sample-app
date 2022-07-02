@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  
+  # to include check that the user is already logged in to access the following site
   def index
   end
   
@@ -10,6 +10,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)    # Not the final implementation!
     if @user.save
+      reset_session
+      log_in @user
       flash[:success] = "Welcome to our Sample Application"
       redirect_to @user
     else
@@ -32,8 +34,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
   end
-  
-  
+
   private
   
   def set_user

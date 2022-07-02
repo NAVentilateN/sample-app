@@ -14,6 +14,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     end
     assert_response :unprocessable_entity
     assert_template 'users/new'
+    assert_select "div#error_explanation ul li", 6
     assert_select 'div#error_explanation'
     assert_select 'div.alert'
   end
@@ -31,6 +32,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     end
     assert_response :redirect
     follow_redirect!
+    assert is_logged_in?
     assert_template 'users/show'
     assert_select 'div.alert-success'
     assert_select 'img.gravatar'
