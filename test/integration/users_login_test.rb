@@ -7,6 +7,7 @@ class UsersLogin < ActionDispatch::IntegrationTest
   
   def setup
     @user = users(:first_user)
+    @user_2 = users(:second_user)
   end
 end
 
@@ -28,22 +29,27 @@ class InvalidPasswordTest < UsersLogin
   end
 end
 
+
 class ValidLogin < UsersLogin
 
   def setup
     super
     post login_path, params: { session: { email:    @user.email,
-                                          password: 'foobar' } }
+                                          password: 'foobar',
+                                          remember_me: "1"} }
   end
 end
+
+
 # in the following test,
 # the previous state of the test will persist throughout the following class. 
 # This allow user to "breakdown" the steps into different class
 class ValidLoginTest < ValidLogin
 
-  test "valid login" do
+  test "valid login with remembering" do
     assert is_logged_in?
     assert_redirected_to @user
+    assert_not_nil cookies[:remember_token]
   end
 
   test "redirect after login" do
@@ -52,6 +58,10 @@ class ValidLoginTest < ValidLogin
     assert_select "a[href=?]", login_path, count: 0
     assert_select "a[href=?]", logout_path
     assert_select "a[href=?]", user_path(@user)
+  end
+  
+  test "log in with remembering" do
+    assert_not_nil cookies[:remember_token]
   end
 end
 
@@ -64,13 +74,14 @@ class Logout < ValidLogin
 end
 
 class LogoutTest < Logout
-
   test "successful logout" do
     assert_not is_logged_in?
     assert_response :see_other
     assert_redirected_to root_url
+    # simulate a second log out in another brower
+    delete logout_path
   end
-
+  
   test "redirect after logout" do
     follow_redirect!
     assert_select "a[href=?]", login_path
@@ -79,6 +90,21 @@ class LogoutTest < Logout
   end
 end
 
+class RememberTest < UsersLogin
+
+  test "login with remembering" do
+    log_in_as(@user, remember_me: '1')
+    assert_equal cookies[:remember_token], assigns(:user).remember_token
+  end
+
+  test "login without remembering" do
+    # Log in to set the cookie.
+    log_in_as(@user, remember_me: '1')
+    # Log in again and verify that the cookie is deleted.
+    log_in_as(@user, remember_me: '0')
+    assert cookies[:remember_token].blank?
+  end
+end 
 #   test "invalid login" do
     
 #     # Visit the login path.
