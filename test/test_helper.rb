@@ -14,7 +14,26 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
   include ApplicationHelper
   
+  
   def is_logged_in?
     !session[:user_id].nil?
   end
+
+  # Log in as a particular user.
+  def log_in_as(user)
+    session[:user_id] = user.id
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  # including it here as above log in method does not get transferred
+  # into our integration test.
+
+  # Log in as a particular user.
+  def log_in_as(user, password: 'foobar', remember_me: '1')
+    post login_path, params: { session: { email: user.email,
+                                          password: password,
+                                          remember_me: remember_me } }
+  end
+  
 end

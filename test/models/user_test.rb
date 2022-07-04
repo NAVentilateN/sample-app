@@ -6,12 +6,18 @@ class UserTest < ActiveSupport::TestCase
   # end
   
   def setup
-    @user = users(:first_user)
-    @user.password = ("foobar")
-    @user.password_confirmation = ("foobar")
-    @user2 = users(:second_user)
-    @user2.password = ("foobar")
-    @user2.password_confirmation = ("foobar")
+    @user = User.new(name: "test", 
+                     first_name: "test", 
+                     last_name: "test", 
+                     email: "test@test.com", 
+                     password: "foobar",
+                     password_confirmation: "foobar")
+    @user2 = User.new(name: "test2", 
+                     first_name: "test2", 
+                     last_name: "test2", 
+                     email: "test2@test.com", 
+                     password: "foobar",
+                     password_confirmation: "foobar")
   end
   
   test "invalid user if name is empty" do
@@ -53,7 +59,7 @@ class UserTest < ActiveSupport::TestCase
   
    test "invalid user if all user email is already taken" do
     @user.save
-    @user2.email = 'first@first.com'
+    @user2.email = @user.email
     assert_not @user2.valid?
   end
   
@@ -90,5 +96,9 @@ class UserTest < ActiveSupport::TestCase
   test "user password should not be less than 6 character" do
     @user.password = "a" * 5
     assert_not @user.valid?
+  end
+  
+  test "authenticate? method should return false if remember digest is nil" do
+    assert_not @user.authenticate?("")
   end
 end
