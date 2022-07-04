@@ -6,12 +6,14 @@ class SessionsController < ApplicationController
     @user = User.find_by(email: session_params[:email].downcase)
     if @user&.authenticate(session_params[:password])
       reset_session
-      log_in @user
+      
         # for the else statement, it is in place 
         # if user logged in again and the checkbox is unchecked
         # this will replace the previous login action 
         # and update the database
+      
       session_params[:remember_me] == "1" ? remember(@user) : forget(@user)
+      log_in @user
       redirect_to @user
     else
       # include an error message

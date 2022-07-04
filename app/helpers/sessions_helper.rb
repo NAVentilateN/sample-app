@@ -9,7 +9,6 @@ module SessionsHelper
      # Guard against session replay attacks.
     # See https://bit.ly/33UvK0w for more.
     session[:session_token] = user.session_token
-    
   end
   
   def remember(user)
@@ -21,11 +20,11 @@ module SessionsHelper
     # this is a or equal operator
     # this is an assignment not a comparator. this is just to remove duplication
     if (user_id = session[:user_id])
-      @current_user ||= User.find_by(id: user_id)
-      # user = User.find_by(id: user_id)
-      # if user && session[:session_token] == user.session_token
-      #   @current_user = user
-      # end
+      # @current_user ||= User.find_by(id: user_id)
+      user = User.find_by(id: user_id)
+      if user && session[:session_token] == user.session_token
+        @current_user = user
+      end
     # to pull out a signed cookie
     elsif (user_id = cookies.encrypted[:user_id])
       #  as we do not have a user instance yet, the only way to find the user
@@ -56,6 +55,7 @@ module SessionsHelper
     # clear remember digest and remember token
     user.forget
     cookie_delete(user)
+    session[:session_token] = nil
     user.remember_token = nil
   end
   

@@ -35,7 +35,7 @@ class User < ApplicationRecord
     # Self is required here if not this will be a local variable
     # that is only usable in the method.
     # having a self here will make it model attribute
-    self.remember_token = User.new_token
+    self.remember_token ||= User.new_token
     update_attribute(:remember_digest, User.digest(remember_token))
     remember_digest
   end

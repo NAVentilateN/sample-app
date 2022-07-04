@@ -36,7 +36,7 @@ class ValidLogin < UsersLogin
     super
     post login_path, params: { session: { email:    @user.email,
                                           password: 'foobar',
-                                          remember_me: "1"} }
+                                          remember_me: 1} }
   end
 end
 
@@ -48,6 +48,7 @@ class ValidLoginTest < ValidLogin
 
   test "valid login with remembering" do
     assert is_logged_in?
+    # assert_equal session[:session_token], @user.session_token
     assert_redirected_to @user
     assert_not_nil cookies[:remember_token]
   end
@@ -55,6 +56,7 @@ class ValidLoginTest < ValidLogin
   test "redirect after login" do
     follow_redirect!
     assert_template 'users/show'
+    # assert_equal session[:session_token], @user.session_token
     assert_select "a[href=?]", login_path, count: 0
     assert_select "a[href=?]", logout_path
     assert_select "a[href=?]", user_path(@user)
