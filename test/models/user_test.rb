@@ -46,8 +46,8 @@ class UserTest < ActiveSupport::TestCase
     assert @user.authenticate('foobar')
   end
   
-  test "invalid user if all user name is more than 20 character long" do
-    @user.name = "a"*21
+  test "invalid user if all user name is more than 50 character long" do
+    @user.name = "a"*51
     assert_not @user.valid?
   end
   
@@ -75,14 +75,14 @@ class UserTest < ActiveSupport::TestCase
   
   
   test "user email should not be the same after saving into database" do
-    email = "FiRsT@FiRsT.com"
+    email = "tEsT@tEsT.com"
     @user.email = email
     @user.save
     assert_not_equal @user.email, email
   end
   
   test "user email should be downcase after saving into database" do
-    email = "FiRsT@FiRsT.com"
+    email = "tEsT@tEsT.com"
     @user.email = email
     @user.save
     assert_equal @user.email, email.downcase
@@ -100,5 +100,27 @@ class UserTest < ActiveSupport::TestCase
   
   test "authenticate? method should return false if remember digest is nil" do
     assert_not @user.authenticate?("")
+  end
+  
+  test "remember function generate remember_digest for user" do
+    @user.remember
+    assert_not_nil @user.remember_digest
+  end
+  
+  test "forget function forget remember_digest for user" do
+    @user.remember
+    @user.forget
+    assert_nil @user.remember_digest
+  end
+  
+  test "session_token generate a new token for user" do
+    assert_nil @user.remember_digest
+    @user.session_token
+    assert_not_nil @user.remember_digest
+  end
+  
+  test "session_token does not generate a new token for user when remember_digest exist" do
+    token_1 = @user.session_token
+    assert_equal token_1, @user.session_token
   end
 end

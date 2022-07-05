@@ -6,6 +6,7 @@ first_user:
   last_name: first
   email: first@first.com
   password_digest: <%= User.digest('foobar') %>
+  admin: true
   
 second_user:
   name: second
@@ -13,3 +14,13 @@ second_user:
   last_name: second
   email: second@second.com
   password_digest: <%= User.digest('foobar') %>
+  
+  
+<% 30.times do |n| %>
+user_<%= n %>:
+  name:  <%= "User #{n}" %>
+  first_name: <%= "User #{n}" %>
+  last_name: <%= "User #{n}" %>
+  email: <%= "user-#{n}@example.com" %>
+  password_digest: <%= User.digest('password') %>
+<% end %>

@@ -1,0 +1,16 @@
+<%= form_with model:@user, method: "#{method}", class: "#{type}_user", id:"#{type}_user" do |form| %>
+  <%= render 'shared/error_messages' %>
+  <%= form.label :name, "Enter your username:" %>
+  <%= form.text_field :name, required: true, placeholder: "Username",maxlength: 20, class: 'form-control' %>
+  <%= form.label :first_name, "Enter your first name:" %>
+  <%= form.text_field :first_name, required: true, placeholder: "First Name", class: 'form-control' %>
+  <%= form.label :last_name, "Enter your last name:" %>
+  <%= form.text_field :last_name, required: true, placeholder: "Last Name", class: 'form-control' %>
+  <%= form.label :email, "Enter your email:" %>
+  <%= form.email_field  :email, required: true, placeholder: "email@email.com", class: 'form-control' %>
+  <%= form.label :password, "Enter your password:" %>
+  <%= form.password_field  :password, required: (method == "patch" ? false : true), minlength: 6, class: 'form-control' %>
+  <%= form.label :password_confirmation, "Confirm your password:" %>
+  <%= form.password_field  :password_confirmation, required: (method == "patch" ? false : true), minlength: 6, class: 'form-control' %>
+  <%= form.submit "#{method == "patch" ? "Update" : "Create" } my account", class: "btn btn-primary" %>
+<% end %>

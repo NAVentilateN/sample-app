@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
   # to include check that the user is already logged in to access the following site
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
+  before_action :correct_user,   only: [:edit, :update]
+  before_action :admin_user,   only: :destroy
+  
   def index
+    @users = User.paginate(page: params[:page])
   end
   
   def new
@@ -20,19 +25,29 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
+    set_user
   end
 
   def update
-    @user = User.find(params[:id])
+    set_user
+   
+    if @user.update(user_params)
+       flash[:success] = "Updated User profile"
+       redirect_to @user
+    else
+      render 'edit', status: :unprocessable_entity
+    end
   end
 
   def show
-    @user = User.find(params[:id])
+    set_user
   end
 
   def destroy
-    @user = User.find(params[:id])
+    set_user
+    @user.destroy
+    flash[:success] = "User deleted"
+    redirect_to users_url, status: :see_other
   end
 
   private
@@ -43,5 +58,24 @@ class UsersController < ApplicationController
   
   def user_params
     params.require(:user).permit(:name, :first_name, :last_name, :email, :password, :password_confirmation)
+  end
+  
+  def logged_in_user
+    unless logged_in?
+      flash[:danger] = "Please log in."
+      store_location
+      redirect_to login_url, status: :see_other
+    end
+  end
+  
+  def correct_user
+    # we can't use @user yet as action is performed before the controller action.
+    # thus @user have not be instantiate
+    @user = User.find(params[:id])
+    redirect_to(root_path, status: :see_other) unless current_user?(@user)
+  end
+  
+  def admin_user
+    redirect_to(root_url, status: :see_other) unless current_user.admin?
   end
 end
