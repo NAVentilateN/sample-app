@@ -12,6 +12,7 @@ class UserTest < ActiveSupport::TestCase
                      email: "test@test.com", 
                      password: "foobar",
                      password_confirmation: "foobar")
+                     
     @user2 = User.new(name: "test2", 
                      first_name: "test2", 
                      last_name: "test2", 
@@ -99,7 +100,7 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test "authenticate? method should return false if remember digest is nil" do
-    assert_not @user.authenticate?("")
+    assert_not @user.authenticate?(:remember,"")
   end
   
   test "remember function generate remember_digest for user" do

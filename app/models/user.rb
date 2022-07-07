@@ -1,8 +1,9 @@
 class User < ApplicationRecord
   # create a memory of remember token without storing it in the database 
-  attr_accessor :remember_token 
+  attr_accessor :remember_token, :activation_token
+  before_save   :downcase_email
+  before_create :create_activation_digest
   
-  before_save { self.email = email.downcase }
   
   VALID_EMAIL_REGEX= /^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$/i
   
@@ -15,7 +16,7 @@ class User < ApplicationRecord
   
   # Returns the hash digest of the given string.
   # A generic method to be used for multiple use cases 
-  # (Bridge Design Pattern)
+  # (Bridge Design Pattern
   
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -49,7 +50,7 @@ class User < ApplicationRecord
   end
   
   # to authenticate user using cookies
-  def authenticate?(remember_token)
+  def authenticate?(attribute, token)
     # In Bcrypt, the comparator method "==" have been redefine
     # instead of comparing first encrypting the token to compare
     # it looks like it is decrypting the digested token and comparing 
@@ -58,7 +59,33 @@ class User < ApplicationRecord
     # and compare both encrypted token. Therefore NOT exposing the 
     # previously store remember token at all
     # this should set to return false if remember digest is nil
-    return false if remember_digest.nil?
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
+  
+  def activate
+    # update_attribute(:activated, true) 
+    # update_attribute(:activated_at, Time.zone.now)
+    update_columns(activated: true, activated_at: Time.zone.now)
+  end
+  
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
+  
+  private
+  # this is a Class method but within it, it call on self referring to the class instance
+  def create_activation_digest
+    # Create the token and digest.
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token)
+  end
+  
+  def downcase_email
+    self.email = email.downcase
+  end
+  
+
+  
 end

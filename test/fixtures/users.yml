@@ -7,6 +7,8 @@ first_user:
   email: first@first.com
   password_digest: <%= User.digest('foobar') %>
   admin: true
+  activated: true,
+  activated_at: <%= Time.zone.now %>
   
 second_user:
   name: second
@@ -14,7 +16,17 @@ second_user:
   last_name: second
   email: second@second.com
   password_digest: <%= User.digest('foobar') %>
-  
+  activated: true,
+  activated_at: <%= Time.zone.now %>
+
+
+unactivated_user:
+  name: unactivated
+  first_name: unactivated
+  last_name: unactivated
+  email: unactivated@unactivated.com
+  password_digest: <%= User.digest('foobar') %>
+  activated: false
   
 <% 30.times do |n| %>
 user_<%= n %>:
@@ -23,4 +35,6 @@ user_<%= n %>:
   last_name: <%= "User #{n}" %>
   email: <%= "user-#{n}@example.com" %>
   password_digest: <%= User.digest('password') %>
+  activated: true,
+  activated_at: <%= Time.zone.now %>
 <% end %>

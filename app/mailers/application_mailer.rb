@@ -1,4 +1,10 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
+  
+  if Rails.env.production?
+    email = "valentinetan91@gmail.com"
+  else
+    email = "from@example.com"
+  end
+  default from: email
   layout "mailer"
 end
