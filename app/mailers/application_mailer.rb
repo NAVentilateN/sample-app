@@ -1,7 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
   
   if Rails.env.production?
-    email = "valentinetan91@gmail.com"
+    email = "NoEmailAccount@email.com"
   else
     email = "from@example.com"
   end
