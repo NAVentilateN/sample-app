@@ -13,7 +13,9 @@ User.create!(name: "test",
             email:"test@test.com", 
             password:"foobar",
             password_confirmation: "foobar",
-            admin: true)
+            admin: true,
+            activated: true,
+            activated_at: Time.zone.now)
 
 puts "Created test user"
 
@@ -28,7 +30,9 @@ puts "Created test user"
                first_name: first_name,
                last_name: last_name,
                password:              password,
-               password_confirmation: password)
+               password_confirmation: password,
+               activated: true,
+               activated_at: Time.zone.now)
 end
 
 puts "Created 50 random users"

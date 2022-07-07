@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_action :admin_user,   only: :destroy
   
   def index
-    @users = User.paginate(page: params[:page])
+    @users = User.where(activated: true).paginate(page: params[:page])
   end
   
   def new
@@ -16,9 +16,9 @@ class UsersController < ApplicationController
     @user = User.new(user_params)    # Not the final implementation!
     if @user.save
       reset_session
-      log_in @user
-      flash[:success] = "Welcome to our Sample Application"
-      redirect_to @user
+      @user.send_activation_email
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       render 'new', status: :unprocessable_entity
     end
@@ -61,9 +61,9 @@ class UsersController < ApplicationController
   end
   
   def logged_in_user
+    store_location
     unless logged_in?
       flash[:danger] = "Please log in."
-      store_location
       redirect_to login_url, status: :see_other
     end
   end

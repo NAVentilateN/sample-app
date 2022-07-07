@@ -32,7 +32,7 @@ module SessionsHelper
       # as part of the remember method
       user = User.find_by(id: user_id)
       # next we will automatically check and authenticate the user into an existing session
-      if user &.authenticate?(cookies[:remember_token])
+      if user &.authenticate?(:remember, cookies[:remember_token])
         log_in user
          @current_user = user
       end
