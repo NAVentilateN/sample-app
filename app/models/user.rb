@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   # create a memory of remember token without storing it in the database 
-  attr_accessor :remember_token, :activation_token
+  attr_accessor :remember_token, :activation_token, :reset_token
   before_save   :downcase_email
   before_create :create_activation_digest
   
@@ -10,7 +10,7 @@ class User < ApplicationRecord
   validates :first_name, :last_name, presence: true
   validates :name, presence: true, uniqueness:{case_sensetive:false}, length: { maximum: 50 }
   validates :email , presence: true, uniqueness:{case_sensetive:false},format:{with:VALID_EMAIL_REGEX,multiline:true}
-  validates :password, presence:  true, length: { minimum: 6 }, allow_nil: true
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
   
   has_secure_password
   
@@ -74,6 +74,20 @@ class User < ApplicationRecord
     UserMailer.account_activation(self).deliver_now
   end
   
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_columns(reset_digest: User.digest(reset_token), reset_sent_at: Time.zone.now)
+  end
+  
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+  
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
+  end
+
+  
   private
   # this is a Class method but within it, it call on self referring to the class instance
   def create_activation_digest
@@ -85,7 +99,4 @@ class User < ApplicationRecord
   def downcase_email
     self.email = email.downcase
   end
-  
-
-  
 end

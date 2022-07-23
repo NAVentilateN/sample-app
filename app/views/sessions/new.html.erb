@@ -9,6 +9,7 @@
       <%= form.label :email, "Enter your email:" %>
       <%= form.email_field  :email, required: true, placeholder: "email@email.com", class: 'form-control' %>
       <%= form.label :password, "Enter your password:" %>
+      <%= link_to "(forgot password)", new_password_reset_path %>
       <%= form.password_field  :password, required: true, class: 'form-control' %>
       <%= form.label :remember_me, class: "checkbox inline" do %>
         <%= form.check_box :remember_me %>
