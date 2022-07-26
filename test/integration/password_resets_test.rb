@@ -77,19 +77,16 @@ class PasswordUpdateTest < PasswordResetForm
                     user: { password:              "foobaz",
                             password_confirmation: "barquux" } }
     assert_response :unprocessable_entity
-    
-    # unsure why but it does not raise an error message, but it does not let the password be updated
-    # assert_select 'div#error_explanation'
+    assert_select 'div#error_explanation'
   end
 
-  test "update with empty password" do
+  test "update with empty password" do 
     patch password_reset_path(@reset_user.reset_token),
           params: { email: @reset_user.email,
                     user: { password:              "",
                             password_confirmation: "" } }
     assert_response :unprocessable_entity
-    # unsure why but it does not raise an error message, but it does not let the password be updated
-    # assert_select 'div#error_explanation'
+    assert_select 'div#error_explanation'
   end
 
   test "update with valid password and confirmation" do

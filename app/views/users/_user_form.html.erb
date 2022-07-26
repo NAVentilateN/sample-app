@@ -1,5 +1,5 @@
 <%= form_with model:@user, method: "#{method}", class: "#{type}_user", id:"#{type}_user" do |form| %>
-  <%= render 'shared/error_messages' %>
+  <%= render 'shared/error_messages', object: form.object %>
   <%= form.label :name, "Enter your username:" %>
   <%= form.text_field :name, required: true, placeholder: "Username",maxlength: 20, class: 'form-control' %>
   <%= form.label :first_name, "Enter your first name:" %>
