@@ -19,6 +19,23 @@ second_user:
   activated: true,
   activated_at: <%= Time.zone.now %>
 
+third_user:
+  name: third
+  first_name: third
+  last_name: third
+  email: third@third.com
+  password_digest: <%= User.digest('foobar') %>
+  activated: true,
+  activated_at: <%= Time.zone.now %>
+
+fourth_user:
+  name: fourth
+  first_name: fourth
+  last_name: fourth
+  email: fourth@fourth.com
+  password_digest: <%= User.digest('foobar') %>
+  activated: true,
+  activated_at: <%= Time.zone.now %>
 
 unactivated_user:
   name: unactivated
