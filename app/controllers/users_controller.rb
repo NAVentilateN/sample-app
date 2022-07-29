@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   # to include check that the user is already logged in to access the following site
-  before_action :logged_in_user, only: [:index, :edit, :show, :update, :destroy, :following, :followers]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,   only: :destroy
   before_action :set_user, only: [:edit, :update, :show, :destroy, :following, :followers]
