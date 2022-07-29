@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
   # to include check that the user is already logged in to access the following site
-  before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :following, :followers]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,   only: :destroy
+  before_action :set_user, only: [:edit, :update, :show, :destroy, :following, :followers]
   
   def index
     @users = User.where(activated: true).paginate(page: params[:page])
@@ -25,12 +26,9 @@ class UsersController < ApplicationController
   end
 
   def edit
-    set_user
   end
 
   def update
-    set_user
-   
     if @user.update(user_params)
        flash[:success] = "Updated User profile"
        redirect_to @user
@@ -40,15 +38,25 @@ class UsersController < ApplicationController
   end
 
   def show
-    set_user
     @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def destroy
-    set_user
     @user.destroy
     flash[:success] = "User deleted"
     redirect_to users_url, status: :see_other
+  end
+  
+  def following
+    @title = "Following"
+    @users = @user.following.paginate(page: params[:page])
+    render 'show_follow', status: :unprocessable_entity
+  end
+
+  def followers
+    @title = "Followers"
+    @users = @user.followers.paginate(page: params[:page])
+    render 'show_follow', status: :unprocessable_entity
   end
 
   private

@@ -132,4 +132,22 @@ class UserTest < ActiveSupport::TestCase
       @user.destroy
     end
   end
+  
+  test "feed should have the right posts" do
+    first = users(:first_user)
+    second  = users(:second_user)
+    third    = users(:third_user)
+    # Posts from followed user
+    third.microposts.each do |post_following|
+      assert first.feed.include?(post_following)
+    end
+    # Self-posts for user with followers
+    first.microposts.each do |post_self|
+      assert first.feed.include?(post_self)
+    end
+    # Posts from non-followed user
+    second.microposts.each do |post_unfollowed|
+      assert_not first.feed.include?(post_unfollowed)
+    end
+  end
 end
