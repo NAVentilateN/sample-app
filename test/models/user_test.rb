@@ -144,6 +144,7 @@ class UserTest < ActiveSupport::TestCase
     # Self-posts for user with followers
     first.microposts.each do |post_self|
       assert first.feed.include?(post_self)
+      assert_equal first.feed.distinct, first.feed
     end
     # Posts from non-followed user
     second.microposts.each do |post_unfollowed|
